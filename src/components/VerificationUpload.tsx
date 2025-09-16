@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 type VerificationStatus = "idle" | "uploading" | "processing" | "verified" | "invalid" | "error";
 
@@ -26,6 +28,7 @@ export const VerificationUpload = () => {
   const [result, setResult] = useState<VerificationResult>({ status: "idle" });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleFileSelect = (selectedFile: File) => {
     if (selectedFile.size > 10 * 1024 * 1024) {
@@ -51,67 +54,101 @@ export const VerificationUpload = () => {
     setProgress(0);
   };
 
-  const simulateVerification = async () => {
-    if (!file) return;
+  const performVerification = async () => {
+    if (!file || !user) return;
 
     setResult({ status: "uploading" });
     setProgress(10);
 
-    // Simulate upload
-    setTimeout(() => {
-      setResult({ status: "processing" });
+    try {
+      // Convert file to base64
+      const fileReader = new FileReader();
+      const fileData = await new Promise<string>((resolve, reject) => {
+        fileReader.onload = () => {
+          const result = fileReader.result as string;
+          resolve(result.split(',')[1]); // Remove data:type;base64, prefix
+        };
+        fileReader.onerror = reject;
+        fileReader.readAsDataURL(file);
+      });
+
       setProgress(30);
-    }, 1000);
+      setResult({ status: "processing" });
 
-    // Simulate processing
-    setTimeout(() => {
-      setProgress(70);
-    }, 2000);
+      // Create verification request in database
+      const { data: verificationRequest, error: dbError } = await supabase
+        .from('verification_requests')
+        .insert({
+          file_name: file.name,
+          file_type: file.type,
+          file_size: file.size,
+          requester_email: user.email,
+          status: 'pending'
+        })
+        .select()
+        .single();
 
-    // Simulate result
-    setTimeout(() => {
-      setProgress(100);
-      
-      // Simulate different verification outcomes
-      const outcomes = [
-        {
-          status: "verified" as const,
-          studentName: "Rajesh Kumar Singh",
-          rollNumber: "2019BCE001",
-          institution: "National Institute of Technology Jamshedpur",
-          degree: "Bachelor of Computer Engineering",
-          year: "2023",
-          grade: "First Class with Distinction",
-          certificateId: "NIT-J-2023-BCE-001",
-          confidence: 98,
-        },
-        {
-          status: "invalid" as const,
-          issues: [
-            "Certificate ID not found in institutional database",
-            "Signature verification failed",
-            "Document tampering detected in grade field"
-          ],
-          confidence: 15,
+      if (dbError) {
+        throw new Error('Failed to create verification request');
+      }
+
+      setProgress(50);
+
+      // Call the document verification edge function
+      const { data: verificationData, error: functionError } = await supabase.functions.invoke('document-verification', {
+        body: {
+          file_data: fileData,
+          file_name: file.name,
+          file_type: file.type,
+          verification_request_id: verificationRequest.id
         }
-      ];
-      
-      const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
-      setResult(randomOutcome);
+      });
 
-      if (randomOutcome.status === "verified") {
+      setProgress(100);
+
+      if (functionError) {
+        throw new Error(functionError.message || 'Verification failed');
+      }
+
+      if (verificationData.success) {
+        setResult({
+          status: "verified",
+          studentName: verificationData.data.student_name,
+          rollNumber: verificationData.data.roll_number,
+          institution: verificationData.data.institution,
+          degree: verificationData.data.degree,
+          year: verificationData.data.year,
+          grade: verificationData.data.grade,
+          certificateId: verificationData.data.certificate_id,
+          confidence: verificationData.confidence,
+        });
+
         toast({
           title: "Certificate Verified",
           description: "Document authentication successful",
         });
       } else {
+        setResult({
+          status: "invalid",
+          issues: verificationData.issues || ["Document could not be verified"],
+          confidence: verificationData.confidence || 0,
+        });
+
         toast({
           title: "Verification Failed",
           description: "Document could not be authenticated",
           variant: "destructive",
         });
       }
-    }, 3500);
+    } catch (error) {
+      console.error('Verification error:', error);
+      setResult({ status: "error" });
+      toast({
+        title: "Verification Error",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
+        variant: "destructive",
+      });
+    }
   };
 
   const getStatusIcon = () => {
@@ -224,7 +261,7 @@ export const VerificationUpload = () => {
                 )}
 
                 <Button 
-                  onClick={simulateVerification}
+                  onClick={performVerification}
                   disabled={!file || result.status === "uploading" || result.status === "processing"}
                   variant="hero"
                   size="lg"

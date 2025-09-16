@@ -1,9 +1,11 @@
 import { Shield, FileCheck, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   
   return (
     <header className="bg-gradient-card border-b border-border shadow-soft">
@@ -20,13 +22,25 @@ export const Header = () => {
           </div>
           
           <nav className="hidden md:flex items-center gap-6">
-            <Button variant="ghost" className="text-foreground hover:text-primary">
+            <Button 
+              variant="ghost" 
+              className="text-foreground hover:text-primary"
+              onClick={() => navigate('/')}
+            >
               Verify Certificate
             </Button>
-            <Button variant="ghost" className="text-foreground hover:text-primary">
+            <Button 
+              variant="ghost" 
+              className="text-foreground hover:text-primary"
+              onClick={() => navigate('/institution')}
+            >
               Institution Portal
             </Button>
-            <Button variant="ghost" className="text-foreground hover:text-primary">
+            <Button 
+              variant="ghost" 
+              className="text-foreground hover:text-primary"
+              onClick={() => navigate('/admin')}
+            >
               Admin Dashboard
             </Button>
             

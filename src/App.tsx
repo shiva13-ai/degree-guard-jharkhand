@@ -7,6 +7,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { AuthGuard } from "@/components/AuthGuard";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import AdminDashboard from "./pages/AdminDashboard";
+import InstitutionPortal from "./pages/InstitutionPortal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +25,16 @@ const App = () => (
             <Route path="/" element={
               <AuthGuard>
                 <Index />
+              </AuthGuard>
+            } />
+            <Route path="/admin" element={
+              <AuthGuard>
+                <AdminDashboard />
+              </AuthGuard>
+            } />
+            <Route path="/institution" element={
+              <AuthGuard>
+                <InstitutionPortal />
               </AuthGuard>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
