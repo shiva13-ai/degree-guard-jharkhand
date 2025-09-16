@@ -1,7 +1,10 @@
-import { Shield, FileCheck } from "lucide-react";
+import { Shield, FileCheck, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
+  const { user, signOut } = useAuth();
+  
   return (
     <header className="bg-gradient-card border-b border-border shadow-soft">
       <div className="container mx-auto px-4 py-4">
@@ -26,9 +29,19 @@ export const Header = () => {
             <Button variant="ghost" className="text-foreground hover:text-primary">
               Admin Dashboard
             </Button>
-            <Button variant="outline">
-              <FileCheck className="w-4 h-4" />
-              Quick Verify
+            
+            <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-full">
+              <User className="w-4 h-4 text-primary" />
+              <span className="text-sm text-foreground">{user?.email}</span>
+            </div>
+            
+            <Button 
+              variant="outline" 
+              onClick={signOut}
+              className="gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
             </Button>
           </nav>
         </div>
