@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,30 +6,66 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { Eye, EyeOff, Shield, LogIn, UserPlus, Building, User } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Eye, EyeOff, Shield, LogIn, UserPlus, Building, User, Settings } from 'lucide-react';
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [userType, setUserType] = useState<'user' | 'institution'>('user');
+  const [userType, setUserType] = useState<'user' | 'institution' | 'admin'>('user');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [validDomains, setValidDomains] = useState<string[]>([]);
   
   const { signUp, signIn, user } = useAuth();
   const { toast } = useToast();
+
+  // Fetch valid institution domains
+  useEffect(() => {
+    const fetchValidDomains = async () => {
+      const { data } = await supabase
+        .from('institutions_domains')
+        .select('domain')
+        .eq('is_verified', true);
+      
+      if (data) {
+        setValidDomains(data.map(item => item.domain));
+      }
+    };
+    
+    fetchValidDomains();
+  }, []);
 
   // Redirect if already authenticated
   if (user) {
     return <Navigate to="/" replace />;
   }
 
+  const validateInstitutionEmail = (email: string): boolean => {
+    const domain = email.split('@')[1];
+    return validDomains.includes(domain);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      // Validate institution email domain
+      if (isSignUp && userType === 'institution') {
+        if (!validateInstitutionEmail(email)) {
+          toast({
+            title: "Invalid Institution Email",
+            description: "Please use your official institution email address. Contact support if your institution is not listed.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
+
       let result;
       if (isSignUp) {
         result = await signUp(email, password, fullName, userType);
@@ -85,42 +121,58 @@ const Auth = () => {
               <>
                 <div className="space-y-4">
                   <Label>Account Type</Label>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-3">
                     <Button
                       type="button"
                       variant={userType === 'user' ? 'default' : 'outline'}
-                      className="p-4 h-auto flex-col gap-2"
+                      className="p-3 h-auto flex-col gap-2 text-xs"
                       onClick={() => setUserType('user')}
                     >
-                      <User className="w-6 h-6" />
+                      <User className="w-5 h-5" />
                       <span>Personal User</span>
                       <span className="text-xs text-muted-foreground">Verify certificates</span>
                     </Button>
                     <Button
                       type="button"
                       variant={userType === 'institution' ? 'default' : 'outline'}
-                      className="p-4 h-auto flex-col gap-2"
+                      className="p-3 h-auto flex-col gap-2 text-xs"
                       onClick={() => setUserType('institution')}
                     >
-                      <Building className="w-6 h-6" />
+                      <Building className="w-5 h-5" />
                       <span>Institution</span>
                       <span className="text-xs text-muted-foreground">Issue certificates</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={userType === 'admin' ? 'default' : 'outline'}
+                      className="p-3 h-auto flex-col gap-2 text-xs"
+                      onClick={() => setUserType('admin')}
+                    >
+                      <Settings className="w-5 h-5" />
+                      <span>Admin</span>
+                      <span className="text-xs text-muted-foreground">System management</span>
                     </Button>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="fullName">
-                    {userType === 'institution' ? 'Institution Name' : 'Full Name'}
+                    {userType === 'institution' ? 'Institution Name' : userType === 'admin' ? 'Admin Name' : 'Full Name'}
                   </Label>
                   <Input
                     id="fullName"
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder={userType === 'institution' ? 'Enter institution name' : 'Enter your full name'}
+                    placeholder={userType === 'institution' ? 'Enter institution name' : userType === 'admin' ? 'Enter admin name' : 'Enter your full name'}
                     required={isSignUp}
                   />
                 </div>
+                {userType === 'institution' && (
+                  <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
+                    <p className="font-medium">Institution Email Required</p>
+                    <p>You must use your official institution email address (e.g., @harvard.edu, @mit.edu). Contact support if your institution domain is not recognized.</p>
+                  </div>
+                )}
               </>
             )}
             

@@ -112,6 +112,33 @@ export type Database = {
         }
         Relationships: []
       }
+      institutions_domains: {
+        Row: {
+          created_at: string
+          domain: string
+          id: string
+          institution_name: string
+          is_verified: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          id?: string
+          institution_name: string
+          is_verified?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          id?: string
+          institution_name?: string
+          is_verified?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
