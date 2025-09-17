@@ -120,6 +120,7 @@ export type Database = {
           id: string
           updated_at: string
           user_id: string
+          user_type: Database["public"]["Enums"]["user_type"] | null
         }
         Insert: {
           created_at?: string
@@ -128,6 +129,7 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id: string
+          user_type?: Database["public"]["Enums"]["user_type"] | null
         }
         Update: {
           created_at?: string
@@ -136,6 +138,7 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id?: string
+          user_type?: Database["public"]["Enums"]["user_type"] | null
         }
         Relationships: []
       }
@@ -221,6 +224,7 @@ export type Database = {
         | "certificate"
         | "marksheet"
         | "other"
+      user_type: "user" | "institution" | "admin"
       verification_status: "pending" | "verified" | "rejected" | "suspicious"
     }
     CompositeTypes: {
@@ -350,6 +354,7 @@ export const Constants = {
   public: {
     Enums: {
       document_type: ["degree", "diploma", "certificate", "marksheet", "other"],
+      user_type: ["user", "institution", "admin"],
       verification_status: ["pending", "verified", "rejected", "suspicious"],
     },
   },

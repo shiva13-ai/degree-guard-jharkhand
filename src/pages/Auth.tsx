@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { Eye, EyeOff, Shield, LogIn, UserPlus } from 'lucide-react';
+import { Eye, EyeOff, Shield, LogIn, UserPlus, Building, User } from 'lucide-react';
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [userType, setUserType] = useState<'user' | 'institution'>('user');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -31,7 +32,7 @@ const Auth = () => {
     try {
       let result;
       if (isSignUp) {
-        result = await signUp(email, password, fullName);
+        result = await signUp(email, password, fullName, userType);
       } else {
         result = await signIn(email, password);
       }
@@ -81,17 +82,46 @@ const Auth = () => {
         <Card className="p-8 bg-gradient-card shadow-elegant border-border">
           <form onSubmit={handleSubmit} className="space-y-6">
             {isSignUp && (
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Enter your full name"
-                  required={isSignUp}
-                />
-              </div>
+              <>
+                <div className="space-y-4">
+                  <Label>Account Type</Label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button
+                      type="button"
+                      variant={userType === 'user' ? 'default' : 'outline'}
+                      className="p-4 h-auto flex-col gap-2"
+                      onClick={() => setUserType('user')}
+                    >
+                      <User className="w-6 h-6" />
+                      <span>Personal User</span>
+                      <span className="text-xs text-muted-foreground">Verify certificates</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={userType === 'institution' ? 'default' : 'outline'}
+                      className="p-4 h-auto flex-col gap-2"
+                      onClick={() => setUserType('institution')}
+                    >
+                      <Building className="w-6 h-6" />
+                      <span>Institution</span>
+                      <span className="text-xs text-muted-foreground">Issue certificates</span>
+                    </Button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">
+                    {userType === 'institution' ? 'Institution Name' : 'Full Name'}
+                  </Label>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder={userType === 'institution' ? 'Enter institution name' : 'Enter your full name'}
+                    required={isSignUp}
+                  />
+                </div>
+              </>
             )}
             
             <div className="space-y-2">
@@ -156,6 +186,7 @@ const Auth = () => {
                 setEmail('');
                 setPassword('');
                 setFullName('');
+                setUserType('user');
               }}
             >
               {isSignUp 

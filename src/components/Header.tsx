@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
-  const { user, signOut } = useAuth();
+  const { user, userType, signOut } = useAuth();
   const navigate = useNavigate();
   
   return (
@@ -29,20 +29,24 @@ export const Header = () => {
             >
               Verify Certificate
             </Button>
-            <Button 
-              variant="ghost" 
-              className="text-foreground hover:text-primary"
-              onClick={() => navigate('/institution')}
-            >
-              Institution Portal
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-foreground hover:text-primary"
-              onClick={() => navigate('/admin')}
-            >
-              Admin Dashboard
-            </Button>
+            {userType === 'institution' && (
+              <Button 
+                variant="ghost" 
+                className="text-foreground hover:text-primary"
+                onClick={() => navigate('/institution')}
+              >
+                Institution Portal
+              </Button>
+            )}
+            {userType === 'admin' && (
+              <Button 
+                variant="ghost" 
+                className="text-foreground hover:text-primary"
+                onClick={() => navigate('/admin')}
+              >
+                Admin Dashboard
+              </Button>
+            )}
             
             <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-full">
               <User className="w-4 h-4 text-primary" />
