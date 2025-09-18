@@ -276,18 +276,25 @@ const Auth = () => {
           <div className="mt-4 p-4 bg-muted/30 rounded-lg text-left">
             <p className="font-semibold mb-2">🎯 Demo Instructions (For Judges):</p>
             <div className="space-y-2 text-xs">
-              <div className="bg-primary/10 p-2 rounded">
-                <p className="font-medium text-primary">Quick Demo Setup:</p>
-                <p>1. Select account type above (User/Employer/Institution/Admin)</p>
-                <p>2. Click "Don't have an account? Sign up"</p>
-                <p>3. Create a test account with any email/password</p>
-                <p>4. Use the verification features</p>
+              <div className="bg-red-100 dark:bg-red-900/20 p-2 rounded border-l-4 border-red-400">
+                <p className="font-medium text-red-800 dark:text-red-200">⚠️ No Pre-created Accounts</p>
+                <p className="text-red-700 dark:text-red-300">Demo accounts need to be created first. Follow these steps:</p>
+              </div>
+              <div className="bg-green-100 dark:bg-green-900/20 p-2 rounded border-l-4 border-green-400">
+                <p className="font-medium text-green-800 dark:text-green-200">✅ Quick Demo Setup:</p>
+                <div className="text-green-700 dark:text-green-300">
+                  <p>1. Select account type above</p>
+                  <p>2. Click "Don't have an account? Sign up"</p>
+                  <p>3. Create account (any email for User/Employer/Admin)</p>
+                  <p>4. For Institution: use @harvard.edu, @mit.edu, etc.</p>
+                  <p>5. Login and test verification features</p>
+                </div>
               </div>
               <div className="space-y-1">
-                <p><strong>👤 User Account:</strong> Verify certificates and documents</p>
-                <p><strong>🏢 Employer Account:</strong> Verify candidate credentials</p>
-                <p><strong>🎓 Institution Account:</strong> Issue and manage certificates</p>
-                <p><strong>⚙️ Admin Account:</strong> System administration and oversight</p>
+                <p><strong>👤 User:</strong> test@user.com (verify certificates)</p>
+                <p><strong>🏢 Employer:</strong> test@company.com (verify candidates)</p>
+                <p><strong>🎓 Institution:</strong> test@harvard.edu (issue certificates)</p>
+                <p><strong>⚙️ Admin:</strong> test@admin.com (system management)</p>
               </div>
             </div>
           </div>
