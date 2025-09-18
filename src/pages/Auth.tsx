@@ -272,17 +272,23 @@ const Auth = () => {
           <p>Secure document verification platform</p>
           <p>Your certificates, verified with confidence</p>
           
-          {/* Example Accounts for Judges */}
+          {/* Demo Instructions for Judges */}
           <div className="mt-4 p-4 bg-muted/30 rounded-lg text-left">
-            <p className="font-semibold mb-2">🎯 Demo Accounts (For Judges):</p>
+            <p className="font-semibold mb-2">🎯 Demo Instructions (For Judges):</p>
             <div className="space-y-2 text-xs">
-              <div className="grid grid-cols-1 gap-1">
-                <p><strong>👤 Student:</strong> john.smith@student.com / demo123</p>
-                <p><strong>🏢 Employer:</strong> hr@techcorp.com / demo123</p>
-                <p><strong>🎓 Institution:</strong> registrar@harvard.edu / demo123</p>
-                <p><strong>⚙️ Admin:</strong> admin@verifyed.com / demo123</p>
+              <div className="bg-primary/10 p-2 rounded">
+                <p className="font-medium text-primary">Quick Demo Setup:</p>
+                <p>1. Select account type above (User/Employer/Institution/Admin)</p>
+                <p>2. Click "Don't have an account? Sign up"</p>
+                <p>3. Create a test account with any email/password</p>
+                <p>4. Use the verification features</p>
               </div>
-              <p className="text-muted-foreground mt-2">Select account type above, then use these credentials to login</p>
+              <div className="space-y-1">
+                <p><strong>👤 User Account:</strong> Verify certificates and documents</p>
+                <p><strong>🏢 Employer Account:</strong> Verify candidate credentials</p>
+                <p><strong>🎓 Institution Account:</strong> Issue and manage certificates</p>
+                <p><strong>⚙️ Admin Account:</strong> System administration and oversight</p>
+              </div>
             </div>
           </div>
         </div>
