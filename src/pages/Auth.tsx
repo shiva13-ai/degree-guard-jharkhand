@@ -166,51 +166,6 @@ const Auth = () => {
             
             {isSignUp && (
               <>
-                <div className="space-y-4">
-                  <Label>Account Type</Label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <Button
-                      type="button"
-                      variant={userType === 'user' ? 'default' : 'outline'}
-                      className="p-3 h-auto flex-col gap-2 text-xs"
-                      onClick={() => setUserType('user')}
-                    >
-                      <User className="w-5 h-5" />
-                      <span>Personal User</span>
-                      <span className="text-xs text-muted-foreground">Verify certificates</span>
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={userType === 'employer' ? 'default' : 'outline'}
-                      className="p-3 h-auto flex-col gap-2 text-xs"
-                      onClick={() => setUserType('employer')}
-                    >
-                      <Building className="w-5 h-5" />
-                      <span>Employer</span>
-                      <span className="text-xs text-muted-foreground">Verify candidates</span>
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={userType === 'institution' ? 'default' : 'outline'}
-                      className="p-3 h-auto flex-col gap-2 text-xs"
-                      onClick={() => setUserType('institution')}
-                    >
-                      <Building className="w-5 h-5" />
-                      <span>Institution</span>
-                      <span className="text-xs text-muted-foreground">Issue certificates</span>
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={userType === 'admin' ? 'default' : 'outline'}
-                      className="p-3 h-auto flex-col gap-2 text-xs"
-                      onClick={() => setUserType('admin')}
-                    >
-                      <Settings className="w-5 h-5" />
-                      <span>Admin</span>
-                      <span className="text-xs text-muted-foreground">System management</span>
-                    </Button>
-                  </div>
-                </div>
                 <div className="space-y-2">
                   <Label htmlFor="fullName">
                     {userType === 'institution' ? 'Institution Name' : 
@@ -319,14 +274,15 @@ const Auth = () => {
           
           {/* Example Accounts for Judges */}
           <div className="mt-4 p-4 bg-muted/30 rounded-lg text-left">
-            <p className="font-semibold mb-2">Example Accounts for Demo:</p>
+            <p className="font-semibold mb-2">🎯 Demo Accounts (For Judges):</p>
             <div className="space-y-2 text-xs">
-              <div>
-                <p><strong>Student:</strong> student@example.com / password123</p>
-                <p><strong>Employer:</strong> hr@techcorp.com / password123</p>
-                <p><strong>Institution:</strong> admin@harvard.edu / password123</p>
-                <p><strong>Admin:</strong> admin@verifyed.com / password123</p>
+              <div className="grid grid-cols-1 gap-1">
+                <p><strong>👤 Student:</strong> john.smith@student.com / demo123</p>
+                <p><strong>🏢 Employer:</strong> hr@techcorp.com / demo123</p>
+                <p><strong>🎓 Institution:</strong> registrar@harvard.edu / demo123</p>
+                <p><strong>⚙️ Admin:</strong> admin@verifyed.com / demo123</p>
               </div>
+              <p className="text-muted-foreground mt-2">Select account type above, then use these credentials to login</p>
             </div>
           </div>
         </div>
