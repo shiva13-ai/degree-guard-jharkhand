@@ -11,7 +11,7 @@ import { Eye, EyeOff, Shield, LogIn, UserPlus, Building, User, Settings } from '
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [userType, setUserType] = useState<'user' | 'institution' | 'admin'>('user');
+  const [userType, setUserType] = useState<'user' | 'institution' | 'admin' | 'employer'>('user');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -117,11 +117,58 @@ const Auth = () => {
 
         <Card className="p-8 bg-gradient-card shadow-elegant border-border">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Account Type Selection for both Login and Sign Up */}
+            <div className="space-y-4">
+              <Label>Account Type</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="button"
+                  variant={userType === 'user' ? 'default' : 'outline'}
+                  className="p-3 h-auto flex-col gap-2 text-xs"
+                  onClick={() => setUserType('user')}
+                >
+                  <User className="w-5 h-5" />
+                  <span>Personal User</span>
+                  <span className="text-xs text-muted-foreground">Verify certificates</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant={userType === 'employer' ? 'default' : 'outline'}
+                  className="p-3 h-auto flex-col gap-2 text-xs"
+                  onClick={() => setUserType('employer')}
+                >
+                  <Building className="w-5 h-5" />
+                  <span>Employer</span>
+                  <span className="text-xs text-muted-foreground">Verify candidates</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant={userType === 'institution' ? 'default' : 'outline'}
+                  className="p-3 h-auto flex-col gap-2 text-xs"
+                  onClick={() => setUserType('institution')}
+                >
+                  <Building className="w-5 h-5" />
+                  <span>Institution</span>
+                  <span className="text-xs text-muted-foreground">Issue certificates</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant={userType === 'admin' ? 'default' : 'outline'}
+                  className="p-3 h-auto flex-col gap-2 text-xs"
+                  onClick={() => setUserType('admin')}
+                >
+                  <Settings className="w-5 h-5" />
+                  <span>Admin</span>
+                  <span className="text-xs text-muted-foreground">System management</span>
+                </Button>
+              </div>
+            </div>
+            
             {isSignUp && (
               <>
                 <div className="space-y-4">
                   <Label>Account Type</Label>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 gap-3">
                     <Button
                       type="button"
                       variant={userType === 'user' ? 'default' : 'outline'}
@@ -131,6 +178,16 @@ const Auth = () => {
                       <User className="w-5 h-5" />
                       <span>Personal User</span>
                       <span className="text-xs text-muted-foreground">Verify certificates</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={userType === 'employer' ? 'default' : 'outline'}
+                      className="p-3 h-auto flex-col gap-2 text-xs"
+                      onClick={() => setUserType('employer')}
+                    >
+                      <Building className="w-5 h-5" />
+                      <span>Employer</span>
+                      <span className="text-xs text-muted-foreground">Verify candidates</span>
                     </Button>
                     <Button
                       type="button"
@@ -156,14 +213,21 @@ const Auth = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="fullName">
-                    {userType === 'institution' ? 'Institution Name' : userType === 'admin' ? 'Admin Name' : 'Full Name'}
+                    {userType === 'institution' ? 'Institution Name' : 
+                     userType === 'admin' ? 'Admin Name' : 
+                     userType === 'employer' ? 'Company Name' : 'Full Name'}
                   </Label>
                   <Input
                     id="fullName"
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder={userType === 'institution' ? 'Enter institution name' : userType === 'admin' ? 'Enter admin name' : 'Enter your full name'}
+                    placeholder={
+                      userType === 'institution' ? 'Enter institution name' : 
+                      userType === 'admin' ? 'Enter admin name' : 
+                      userType === 'employer' ? 'Enter company name' : 
+                      'Enter your full name'
+                    }
                     required={isSignUp}
                   />
                 </div>
@@ -252,6 +316,19 @@ const Auth = () => {
         <div className="mt-6 text-center text-sm text-muted-foreground">
           <p>Secure document verification platform</p>
           <p>Your certificates, verified with confidence</p>
+          
+          {/* Example Accounts for Judges */}
+          <div className="mt-4 p-4 bg-muted/30 rounded-lg text-left">
+            <p className="font-semibold mb-2">Example Accounts for Demo:</p>
+            <div className="space-y-2 text-xs">
+              <div>
+                <p><strong>Student:</strong> student@example.com / password123</p>
+                <p><strong>Employer:</strong> hr@techcorp.com / password123</p>
+                <p><strong>Institution:</strong> admin@harvard.edu / password123</p>
+                <p><strong>Admin:</strong> admin@verifyed.com / password123</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

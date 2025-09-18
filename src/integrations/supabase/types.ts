@@ -251,7 +251,7 @@ export type Database = {
         | "certificate"
         | "marksheet"
         | "other"
-      user_type: "user" | "institution" | "admin"
+      user_type: "user" | "institution" | "admin" | "employer"
       verification_status: "pending" | "verified" | "rejected" | "suspicious"
     }
     CompositeTypes: {
@@ -381,7 +381,7 @@ export const Constants = {
   public: {
     Enums: {
       document_type: ["degree", "diploma", "certificate", "marksheet", "other"],
-      user_type: ["user", "institution", "admin"],
+      user_type: ["user", "institution", "admin", "employer"],
       verification_status: ["pending", "verified", "rejected", "suspicious"],
     },
   },
